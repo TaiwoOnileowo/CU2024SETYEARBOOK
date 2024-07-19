@@ -68,8 +68,7 @@ export const AppContext = ({ children }) => {
           (currentGroupIndex + 1) %
           (courseFilter ? resultFromFilter : resultFromInput).length;
       }
-      console.log(newGroupIndex);
-      console.log(newIndex);
+
       setCurrentIndex(newIndex);
       setCurrentGroupIndex(newGroupIndex);
       setSelectedPerson({
@@ -88,8 +87,7 @@ export const AppContext = ({ children }) => {
         newGroupIndex =
           (currentGroupIndex + 1) % graduates[graduatesIndex].length;
       }
-      console.log(newGroupIndex);
-      console.log(newIndex);
+
       setCurrentIndex(newIndex);
       setCurrentGroupIndex(newGroupIndex);
       setSelectedPerson({
@@ -100,24 +98,47 @@ export const AppContext = ({ children }) => {
     }
   };
 
-  const handlePrevious = () => {
+  const handlePrevious = (isSearchResults) => {
     let newIndex = currentIndex - 1;
     let newGroupIndex = currentGroupIndex;
-
-    if (newIndex < 0) {
-      newGroupIndex =
-        (currentGroupIndex - 1 + graduates[graduatesIndex].length) %
-        graduates[graduatesIndex].length;
-      newIndex = graduates[graduatesIndex][newGroupIndex].images.length - 1;
+    if (isSearchResults) {
+      if (newIndex < 0) {
+        newGroupIndex =
+          (currentGroupIndex -
+            1 +
+            (courseFilter ? resultFromFilter : resultFromInput).length) %
+          (courseFilter ? resultFromFilter : resultFromInput).length;
+        newIndex =
+          (courseFilter ? resultFromFilter : resultFromInput)[newGroupIndex]
+            .images.length - 1;
+      }
+      setCurrentIndex(newIndex);
+      setCurrentGroupIndex(newGroupIndex);
+      setSelectedPerson({
+        name: (courseFilter ? resultFromFilter : resultFromInput)[newGroupIndex]
+          .names[newIndex],
+        image: (courseFilter ? resultFromFilter : resultFromInput)[
+          newGroupIndex
+        ].images[newIndex],
+        course: (courseFilter ? resultFromFilter : resultFromInput)[
+          newGroupIndex
+        ].courses[newIndex],
+      });
+    } else {
+      if (newIndex < 0) {
+        newGroupIndex =
+          (currentGroupIndex - 1 + graduates[graduatesIndex].length) %
+          graduates[graduatesIndex].length;
+        newIndex = graduates[graduatesIndex][newGroupIndex].images.length - 1;
+      }
+      setCurrentIndex(newIndex);
+      setCurrentGroupIndex(newGroupIndex);
+      setSelectedPerson({
+        name: graduates[graduatesIndex][newGroupIndex].names[newIndex],
+        image: graduates[graduatesIndex][newGroupIndex].images[newIndex],
+        course: graduates[graduatesIndex][newGroupIndex].courses[newIndex],
+      });
     }
-
-    setCurrentIndex(newIndex);
-    setCurrentGroupIndex(newGroupIndex);
-    setSelectedPerson({
-      name: graduates[graduatesIndex][newGroupIndex].names[newIndex],
-      image: graduates[graduatesIndex][newGroupIndex].images[newIndex],
-      course: graduates[graduatesIndex][newGroupIndex].courses[newIndex],
-    });
   };
 
   const handleGraduatesNext = () => {
